@@ -30,12 +30,13 @@ final class AssetPickerViewController: AnyImageViewController {
     private var autoScrollToLatest: Bool = false
     private var didRegisterPhotoLibraryChangeObserver: Bool = false
     
+    private var _dataSource: Any? = nil
+    
     @available(iOS 14.0, *)
-    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, Asset> = {
-        return UICollectionViewDiffableDataSource<Section, Asset>(collectionView: collectionView) { (collectionView, indexPath, asset) -> UICollectionViewCell? in
-            return nil
-        }
-    }()
+    var dataSource: UICollectionViewDiffableDataSource<Section, Asset>? {
+        get { return _dataSource as? UICollectionViewDiffableDataSource<Section, Asset> }
+        set { _dataSource = newValue }
+    }
     
     lazy var stopReloadAlbum: Bool = false
     
