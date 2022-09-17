@@ -30,18 +30,13 @@ final class AssetPickerViewController: AnyImageViewController {
     private var autoScrollToLatest: Bool = false
     private var didRegisterPhotoLibraryChangeObserver: Bool = false
     
-    #if swift(>=5.5)
-    /// Fix Xcode 13 beta bug.
+    private var _dataSource: Any? = nil
+    
     @available(iOS 14.0, *)
-    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, Asset> = {
-        return UICollectionViewDiffableDataSource<Section, Asset>(collectionView: collectionView) { (collectionView, indexPath, asset) -> UICollectionViewCell? in
-            return nil
-        }
-    }()
-    #else
-    @available(iOS 14.0, *)
-    private lazy var dataSource = UICollectionViewDiffableDataSource<Section, Asset>()
-    #endif
+    var dataSource: UICollectionViewDiffableDataSource<Section, Asset>? {
+        get { return _dataSource as? UICollectionViewDiffableDataSource<Section, Asset> }
+        set { _dataSource = newValue }
+    }
     
     lazy var stopReloadAlbum: Bool = false
     
@@ -540,7 +535,7 @@ extension AssetPickerViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let asset: Asset
         if #available(iOS 14.0, *) {
-            guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
+            guard let item = dataSource?.itemIdentifier(for: indexPath) else { return }
             asset = item
         } else {
             guard let album = album else { return }
@@ -691,7 +686,7 @@ extension AssetPickerViewController {
     private func reloadData(animated: Bool = true) {
         if #available(iOS 14.0, *) {
             let snapshot = initialSnapshot()
-            dataSource.apply(snapshot, animatingDifferences: animated)
+            dataSource?.apply(snapshot, animatingDifferences: animated)
         } else {
             collectionView.reloadData()
         }
