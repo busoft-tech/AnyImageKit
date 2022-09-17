@@ -535,7 +535,7 @@ extension AssetPickerViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let asset: Asset
         if #available(iOS 14.0, *) {
-            guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
+            guard let item = dataSource?.itemIdentifier(for: indexPath) else { return }
             asset = item
         } else {
             guard let album = album else { return }
@@ -686,7 +686,7 @@ extension AssetPickerViewController {
     private func reloadData(animated: Bool = true) {
         if #available(iOS 14.0, *) {
             let snapshot = initialSnapshot()
-            dataSource.apply(snapshot, animatingDifferences: animated)
+            dataSource?.apply(snapshot, animatingDifferences: animated)
         } else {
             collectionView.reloadData()
         }
